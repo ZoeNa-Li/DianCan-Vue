@@ -1,0 +1,104 @@
+.border-1px(@color){
+  position: relative;
+  &:after{
+  	display: block;
+  	position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid @color;
+    content: ' ';
+  }
+}
+.border-none(){
+  &:after{
+    display: none;
+  }
+}
+.display-inline-blok(){
+  display: inline-block; /* 现代浏览器 IE6、7inline元素*/
+  *display: inline;
+  *zoom: 1;
+}
+.box-radius(@pixel){
+-webkit-border-radius: @pixel;
+-moz-border-radius: @pixel;
+border-radius: @pixel;
+}
+.bg-image(@url){
+  background-image: url("@{url}@2x.png");
+  @media (-webkit-min-device-pixel-ratio: 3),(min-device-pixel-ratio: 3){
+  background-image: url("@{url}@3x.png");
+  }
+}
+.soupport-icon(@url, @num){
+  &.decrease{
+    .bg-image("@{url}decrease_@{num}");
+  }
+  &.discount{
+    .bg-image("@{url}discount_@{num}");
+  }
+  &.invoice{
+    .bg-image("@{url}invoice_@{num}");
+  }
+  &.guarantee{
+    .bg-image("@{url}guarantee_@{num}");
+  }
+  &.special{
+    .bg-image("@{url}special_@{num}");
+   }
+}
+/*父元素flex*/
+.parent-flex(){
+    display: -webkit-box;  /* 老版本语法: Safari, iOS, Android browser, older WebKit browsers. */
+    display: -moz-box;     /* 老版本语法: Firefox (buggy) */
+    display: -ms-flexbox;  /* 混合版本语法: IE 10 */
+    display: -webkit-flex; /* 新版本语法: Chrome 21+ */
+    display: flex;         /* 新版本语法: Opera 12.1, Firefox */
+}
+/* */
+.flex-dire(@dir){
+  -webkit-box-flex-direction: @dir;  /* OLD - iOS 6-, Safari 3.1-6 */  
+  -moz-box-flex-direction: @dir;     /* OLD - Firefox 19- */              
+  -webkit-flex-direction: @dir;      /* Chrome */  
+  -ms-flex-direction: @dir;           /* IE 10 */  
+  flex-direction: @dir;
+}
+/*子元素flex*/
+.child-flex(@num){
+  -webkit-box-flex: @num;  /* OLD - iOS 6-, Safari 3.1-6 */  
+  -moz-box-flex: @num;     /* OLD - Firefox 19- */              
+  -webkit-flex: @num;      /* Chrome */  
+  -ms-flex: @num;           /* IE 10 */  
+  flex: @num;              /* NEW, Spec - Opera 12.1, Firefox */ 
+}
+/**/
+.child-allflex(@num1, @num2, @num3){
+  -webkit-box-flex: @num1 @num2 @num3;  /* OLD - iOS 6-, Safari 3.1-6 */  
+  -moz-box-flex: @num1 @num2 @num3;     /* OLD - Firefox 19- */              
+  -webkit-flex: @num1 @num2 @num3;      /* Chrome */  
+  -ms-flex: @num1 @num2 @num3;           /* IE 10 */  
+  flex: @num1 @num2 @num3;  
+}
+.border-box(){
+box-sizing: border-box;
+}
+.slide-enter-leave(){
+    &.fade-enter-active{
+      transition: all 0.4s ease-out;
+    }
+    &.fade-leave-active{
+      opacity: 1;
+      transition: all 0.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+    &.fade-enter, &.fade-leave-active {
+      opacity: 0.1;
+    @media(-webkit-min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2){ 
+      transform: translateX(320px);
+    } 
+     @media(-webkit-min-device-pixel-ratio: 3), (-webkit-min-device-pixel-ratio: 3){
+      opacity: 0.1;
+      transform: translateX(414px);
+    }  
+    }
+}
