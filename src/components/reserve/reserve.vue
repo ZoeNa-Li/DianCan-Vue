@@ -1,7 +1,7 @@
 <template>
  <transition name="fade">
   <div class="reserve">
-  	<v-slider></v-slider>
+  	<v-slider title="预定"></v-slider>
     <form class="content">
       <div class="time">
         <label for="time" class="time-label">请选择你的时间</label><br>
@@ -45,6 +45,10 @@ export default{
   components: {
   	'v-slider': Slider
   },
+  created() {
+    this.creatTime();
+    this.prevent();
+  },
   methods: {
     out() {
       console.log(this.numType);
@@ -61,10 +65,33 @@ export default{
       var m = dd.getMonth() + 1;// 获取当前月份的日期
       var d = dd.getDate();
       return y + '-' + m + '-' + d;
+    },
+    prevent(event) {
+    var startPos = 0;
+    var endPos = 0;
+    var isScrolling = 0;
+    document.addEventListener('touchstart', function(event) {
+        var touch = event.targetTouches[0]; // touches数组对象获得屏幕上所有的touch，取第一个touch
+            startPos = {x: touch.pageX, y: touch.pageY, time: +new Date()}; // 取第一个touch的坐标值
+            isScrolling = 0; // 这个参数判断是垂直滚动还是水平滚动
+    }, false);
+    // 解绑事件 web前端开发
+    document.addEventListener('touchend', function(event) {
+    document.removeEventListener('touchmove', this, false);
+    document.removeEventListener('touchend', this, false);
+    }, false);
+    document.addEventListener('touchmove', function(event) {
+        // 当屏幕有多个touch或者页面被缩放过，就不执行move操作
+        if (event.targetTouches.length > 1 || event.scale && event.scale !== 1) return;
+        var touch = event.targetTouches[0];
+        endPos = {x: touch.pageX - startPos.x, y: touch.pageY - startPos.y};
+        isScrolling = Math.abs(endPos.x) < Math.abs(endPos.y) ? 1 : 0; // isScrolling为1时，表示纵向滑动，0为横向滑动
+        if (isScrolling === 1) {
+            // alert(0);
+            event.preventDefault(); // 阻止触摸事件的默认行为，即阻止滚屏
+        }
+    }, false);
     }
-  },
-  created() {
-    this.creatTime();
   }
 };
 </script>
@@ -98,7 +125,7 @@ export default{
         appearance:none;
         -moz-appearance:none;
          -webkit-appearance:none;
-        border:1px solid #c8cccf;
+         border:1px solid #4e4c4c;
       }
     }
     .type{
@@ -110,12 +137,18 @@ export default{
       }
     }
     .submit{
-      width: 90px;
-      height: 45px;
-      background: #ef4117;
-      .box-radius(2px);
-      color: #fff;
+      .noe-webkit-border();
+      width: 80px;
+      height: 40px;
+      outline:none;  
+      border:0px;  
+      background: #fff;
+      .box-radius(5px);
+      border: solid 1px #efa044;
       margin: 8px auto 0 auto;
+      &:active{
+         border: solid 2px #efa044;
+      }
     }
 }
 </style>

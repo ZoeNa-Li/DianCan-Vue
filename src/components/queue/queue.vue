@@ -1,7 +1,7 @@
 <template>
  <transition name="fade">
   <div class="queue">
-  	<v-slider></v-slider>
+  	<v-slider title="排队"></v-slider>
     <div class="content-wrapper">
       <p class="title">当前有4人在排队</p>
       <button class="button">刷新状态</button>
@@ -34,12 +34,17 @@ export default{
         margin-bottom: 15px;
       }
       .button{
+        outline: 0;
+        border: 0;
         background: #fff;
-         line-height: 18px;
+        line-height: 18px;
         font-size: 18px;
         width: 150px;
         height: 38px;
-        .box-radius(2px);
+        &:active{
+           border: solid 2px #efa044;
+        }
+        .box-radius(6px);
         margin: 0 auto;
         border: solid 1px #efa044;
       }

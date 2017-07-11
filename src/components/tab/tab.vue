@@ -11,7 +11,7 @@
     </router-link>
      <router-link to="/queue" class="tab-item">
   	  <span class="icon queue-icon"><i class="icon-queue"></i></span>
-      <span class="title">订单</span>
+      <span class="title">排队</span>
     </router-link>
     <router-link to="/order" class="tab-item">
   	  <span class="icon order"><i class="icon-order"></i></span>
@@ -63,16 +63,16 @@ export default{
 	  	line-height: 16px;
 	  }
 	  .food{
-	  	background: #efc90c;
+	  	background: #f5e518;
 	  }
 	  .alarm{
-	  	background: #07d892;
+	  	background: #60e212;
 	  }
 	  .queue-icon{
-	  	background: #0ca9ef;
+	  	background: #4aa9da;
 	  }
 	  .order{
-        background: #e31d1d;
+        background: #ec2828;
 	  }
 	}
 

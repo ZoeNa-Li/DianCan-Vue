@@ -1,3 +1,10 @@
+.noe-webkit-border(){
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  appearance: none;
+  border-radius: 0;
+}
 .border-1px(@color){
   position: relative;
   &:after{
@@ -85,20 +92,20 @@ box-sizing: border-box;
 }
 .slide-enter-leave(){
     &.fade-enter-active{
-      transition: all 0.4s ease-out;
+      transition: all 0.2s ease-out;
     }
     &.fade-leave-active{
       opacity: 1;
-      transition: all 0.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+      transition: all 0.3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
     &.fade-enter, &.fade-leave-active {
-      opacity: 0.1;
+       opacity: 0.1;
     @media(-webkit-min-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2){ 
-      transform: translateX(320px);
+       // transform: translateX(320px);
     } 
      @media(-webkit-min-device-pixel-ratio: 3), (-webkit-min-device-pixel-ratio: 3){
-      opacity: 0.1;
-      transform: translateX(414px);
+       opacity: 0.1;
+      // transform: translateX(414px);
     }  
     }
 }

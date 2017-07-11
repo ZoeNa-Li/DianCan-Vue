@@ -1,29 +1,30 @@
 <template>
   <div>
     <div class="shopcart">
-      <div class="content" @click="toggleList">
-        <div class="content-left">
+      <div class="content">
+        <div class="content-left" @click="toggleList">
           <div class="logo-wrapper">
             <div class="logo" :class="{'highlight':totalCount>0}">
-              <i class="icon-cart" :class="{'highlight':totalCount>0}"></i>
+              <span class="icon-cart" :class="{'highlight':totalCount>0}"></span>
             </div>
              <transition name="change-size">
              	<div class="num" v-show="totalCount>0">{{totalCount}}</div>
              </transition>
           </div>
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
-          <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
         </div>
-        <div class="content-right" @click.stop.prevent="pay">
-          <div class="pay" :class="payClass">
-           选好了
-          </div>
+        <div class="content-right" >
+        <form action="http://bao2v.com/diancan1/submitOrder"  @submit="onSubmit" role="form" method="post">
+                 <input type="text" name="list" :value="orderList" hidden></input>
+                 <input type="submit" value="提交订单" id="post" class="pay" :class="payClass" />
+        </form> 
+         <!-- <input type="submit" value="提交订单" id="post" class="pay" :class="payClass" /> -->
         </div>
       </div>
       <transition name="fold">
         <div class="shopcart-list" v-show="listShow">
           <div class="list-header">
-            <h1 class="title">购物车</h1>
+            <h1 class="title">已选菜单</h1>
             <span class="empty" @click="empty">清空</span>
           </div>
           <div class="list-content" ref="listContent">
@@ -31,7 +32,7 @@
               <li class="food" v-for="food in selectFoods">
                 <span class="name">{{food.name}}</span>
                 <div class="price">
-                  <span>￥{{food.price*food.count}}</span>
+                  <span>￥{{food.price*food.count1}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
                   <cartcontrol @add="addFood" :food="food"></cartcontrol>
@@ -68,23 +69,33 @@
     },
     data() {
       return {
-        fold: true
+        fold: true,
+        menuList: {}
       };
     },
     computed: {
       totalPrice() {
         let total = 0;
         this.selectFoods.forEach((food) => {
-          total += food.price * food.count;
+          total += food.price * food.count1;
         });
         return total;
       },
       totalCount() {
         let count = 0;
         this.selectFoods.forEach((food) => {
-          count += food.count;
+          count += food.count1;
         });
         return count;
+      },
+      menuList() {
+        this.selectFoods.forEach((food) => {
+          if (!this.menuList[food.name]) {
+            this.menuList[food.name] = 1;
+          } else {
+            this.menuList[food.name] ++;
+          }
+        });
       },
       payDesc() {
         if (this.totalPrice === 0) {
@@ -97,7 +108,8 @@
         }
       },
       payClass() {
-        if (this.totalPrice < this.minPrice) {
+        var count = this.totalCount;
+        if (count <= 0) {
           return 'not-enough';
         } else {
           return 'enough';
@@ -121,6 +133,17 @@
           });
         }
         return show;
+      },
+      orderList() {
+        var lists = this.selectFoods;
+        var result = {};
+        for (var key in lists) {
+           result['item_' + key] = {};
+           result['item_' + key].id = lists[key].id;
+           result['item_' + key].count = lists[key].count;
+        }
+        result['item_num'] = Number(key) + 1;
+        return JSON.stringify(result);
       }
     },
     methods: {
@@ -129,6 +152,7 @@
           return;
         }
         this.fold = !this.fold;
+        this.foldOrder = !this.foldOrder;
       },
       hideList() {
         this.fold = true;
@@ -146,6 +170,19 @@
       },
       addFood(target) {
         // this.drop(target);
+      },
+      onSubmit(event) {
+        if (this.totalCount === 0) {
+          if (event.preventDefault !== 'undefined') {
+              event.preventDefault();
+              return;
+          } else {
+             event.returnValue = false;
+             return;
+          }
+        } else {
+          return;
+        }
       }
     },
     components: {
@@ -182,29 +219,42 @@
           width: 56px;
           height: 56px;
           box-sizing: border-box;
-          border-radius: 50%;
+          .box-radius(50%);
           background: #141d27;
           .logo{
           	width: 100%;
             height: 100%;
-            border-radius: 50%;
+            .box-radius(50%);
             text-align: center;
             background: #2b343c;
             &.highlight{
-            	background: #f1b50b;
+            	background: #FFF;
             }
               
-            .icon-shopping_cart{
+            .icon-cart{
               line-height: 44px;
               font-size: 24px;
               color: #80858a;
               &.highlight{
-              	 color: #fff;
+              	 color: #000;
               }
             }
 
           }
-
+           .change-size-enter-active {
+            animation: bounce-in .5s;
+            }
+          @keyframes bounce-in {
+             0% {
+                transform: scale(0);
+                 }
+             50% {
+                transform: scale(1.25);
+                 }
+             100% {
+                transform: scale(0.8);
+                }
+          }
                
           .num{
           	position: absolute;
@@ -217,24 +267,11 @@
             border-radius: 16px;
             font-size: 9px;
             font-weight: 700;
-            color: #fff;
-            background: rgb(240, 20, 20);
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+            color: #f7f3f3;
+            background: #f01414;;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.9);
           }
-          .change-size-enter-active {
-                 animation: bounce-in .5s;
-            }
-          @keyframes bounce {
-          	 0% {
-                transform: scale(0);
-                 }
-             50% {
-                transform: scale(2);
-                 }
-             100% {
-                transform: scale(0.5);
-                }
-          }
+         
       
         }
                    
@@ -267,18 +304,28 @@
       	flex: 0 0 105px;
         width: 105px;
         .pay{
-        	 height: 48px;
+         .noe-webkit-border();
+          margin:0;
+          border:none;
+          padding:0; 
+          display:block;
+        	height: 48px;
+          width:105px;
           line-height: 48px;
           text-align: center;
           font-size: 16px;
           font-weight: 700;
           &.not-enough{
+             color:#80858a;
           	 background: #2b333b;
           }
-           
           &.enough{
-          	background: #ef4117;
+          	background: #f31414;
             color: #fff;
+          }
+          &:active{
+            border:#ae1414;
+            background-color: #ae1414;
           }
         }
       }
@@ -363,7 +410,7 @@
           }
             
           .cartcontrol-wrapper{
-          	 position: absolute;
+          	position: absolute;
             right: 0;
             bottom: 6px;
           }

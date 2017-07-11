@@ -1,7 +1,7 @@
 <template>
   <transition name="fade">
   <div class="menu">
-  	<v-slider></v-slider>
+  	<v-slider title="菜单"></v-slider>
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
           <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
@@ -24,7 +24,7 @@
                   <h2 class="name">{{food.name}}</h2>
                   <p class="desc">{{food.description}}</p>
                   <div class="extra">
-                    <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
+                    <span class="count">月售{{food.sellCount}}份</span>
                   </div>
                   <div class="price">
                     <span class="now">￥{{food.price}}</span><span class="old"
@@ -89,8 +89,20 @@ export default{
         let foods = [];
         this.goods.forEach((good) => {
           good.foods.forEach((food) => {
+            var flag = true;
             if (food.count) {
-              foods.push(food);
+               foods.forEach((subFood) => {
+                if (subFood.id === food.id) {
+                  subFood.count1 = subFood.count + food.count;
+                  flag = false;
+                } else {
+                  subFood.count1 = subFood.count;
+                }
+               });
+               if (flag === true) {
+                food.count1 = food.count;
+                foods.push(food);
+               }
             }
           });
         });
@@ -125,8 +137,7 @@ export default{
           return;
         }
         this.selectedFood = food;
-         this.$refs.food.show();
-         console.log(food);
+         // this.$refs.food.show();
       },
     addFood(target) {
         // this._drop(target);
@@ -135,7 +146,7 @@ export default{
         this.menuScroll = new BScroll(this.$refs.menuWrapper, {click: true});
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
           click: true,
-            probeType: 3});
+          probeType: 3});
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
         });
@@ -171,22 +182,21 @@ export default{
       height: 54px;
       padding: 0 12px;
       line-height: 14px;
+      background-color: #e2e2e2;
       &.current{
         position: relative;
         z-index: 10;
         margin-top: -1px;
         background: #fff;
         font-weight: 700;
-        .text{
-          .border-none;
-        }
+        background-color: #fff;
       }
       .text{
         display: table-cell;
         width: 56px;
         vertical-align: middle;
         font-size: 12px;
-        .border-1px(rgba(7,17,27,0.2));
+       
       }
             .icon{
               .display-inline-blok;

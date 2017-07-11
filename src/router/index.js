@@ -5,6 +5,7 @@ import Menu from '../components/menu/menu.vue';
 import Reserve from '../components/reserve/reserve.vue';
 import Queue from '../components/queue/queue.vue';
 import Order from '../components/order/order.vue';
+import pay from '../components/pay/pay.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
@@ -35,6 +36,11 @@ export default new VueRouter({
       path: '/order',
       name: 'Order',
       component: Order
+    },
+    {
+      path: '/pay',
+      name: 'Pay',
+      component: pay
     }
   ]
 });
