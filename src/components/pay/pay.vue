@@ -15,9 +15,9 @@
               <span class="num">￥{{orderLists.totalPrice}}</span>
            </div> 
     </div>
-    <div class="payOrder" @click="ShowMask()">
-         支付账单
-    </div>
+    <form action="http://bao2v.com/diancan1/payLatestOrder" method="get">
+          <input type="submit" class="payOrder" value="支付账单">
+    </form>
     <div class="pay-mask" v-show="showMask">
         <div class="pay-mask-content"></div>
         <div class="pay-mask-close" @click="changeShowMask()">X</div>
@@ -120,6 +120,7 @@ export default{
   }
 
   .payOrder{
+    .noe-webkit-border();
     position: relative;
     left:70%;
     right: 0;

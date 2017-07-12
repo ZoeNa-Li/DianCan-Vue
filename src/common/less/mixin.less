@@ -1,3 +1,55 @@
+.pay(){
+   .order-list{
+    padding:10px;
+    .border-1px(#e2dfdf);  
+    .order-status{
+      font-size: 14px;
+      position: absolute;
+      right:10px;
+      top:10px;
+      &.pay{ 
+        color: #17cd87;
+      }
+      &.lose{
+        color: #ec5018;
+      }
+      &.unpay{
+        color: #e6e640;
+      }
+    }
+    .food-list{
+      margin-bottom: 5px;
+      font-size: 16px;
+      .name{
+        display: block;
+        margin-bottom: 2px;
+        color: #000;
+      }
+      .count{
+        color: #8f8c8c;
+      }
+    }
+    .totalPrice{
+      font-size: 14px;
+    }
+    .pay-button{
+      .noe-webkit-border();
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 50px;
+      height: 25px;
+      border: 1px solid #f31414;
+      .box-radius(3px);
+      background-color: #fff;
+      color: #f31414;
+      &:active{
+        background-color: #f31414;
+        color: #fff; 
+      }
+    }
+    }
+}
 .noe-webkit-border(){
   -webkit-appearance: none;
   -moz-appearance: none;
