@@ -72,9 +72,11 @@ export default{
   		  this.showSeller = !this.showSeller;
   		} else if (index === 1) {
           this.showMap = !this.showMap;
-  		}
+  		} else if (index === 2) {
+        window.location.href = 'tel://10086';
+      }
   	this.showList[index] = !this.showList[index];
-  		console.log(this.showList);
+  		// console.log(this.showList);
   	},
   	changeSellShowDetail() {
   		this.showSeller = !this.showSeller;

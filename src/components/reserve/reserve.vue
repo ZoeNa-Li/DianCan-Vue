@@ -5,7 +5,7 @@
     <form class="content">
       <div class="time">
         <label for="time" class="time-label">请选择你的时间</label><br>
-        <select v-model="reTime" id="time" type="text" placeholder="2017-4-27" class="time-slect">
+        <select v-model="reTime" id="time" type="text"  class="time-slect">
           <option>{{dayOne}}</option>
           <option>{{dayTwo}}</option>
           <option>{{dayThree}}</option>
@@ -24,7 +24,7 @@
         <label for="eight">八人桌</label>
         <br>
       </div>  
-      <input type="submit" value="预定" class="submit">  
+      <input type="button" value="预定" class="submit" @click="save">  
     </form>
   </div>
   </transition>
@@ -51,7 +51,7 @@ export default{
   },
   methods: {
     out() {
-      console.log(this.numType);
+      // console.log(this.numType);
     },
     creatTime() {
       this.dayOne = this.getDateStr(1);
@@ -59,38 +59,22 @@ export default{
       this.dayThree = this.getDateStr(3);
     },
     getDateStr (dayCount) {
-      var dd = new Date();
+      let dd = new Date();
       dd.setDate(dd.getDate() + dayCount);// 设置日期
-      var y = dd.getFullYear();
-      var m = dd.getMonth() + 1;// 获取当前月份的日期
-      var d = dd.getDate();
+      let y = dd.getFullYear();
+      let m = dd.getMonth() + 1;// 获取当前月份的日期
+      let d = dd.getDate();
       return y + '-' + m + '-' + d;
     },
-    prevent(event) {
-    var startPos = 0;
-    var endPos = 0;
-    var isScrolling = 0;
-    document.addEventListener('touchstart', function(event) {
-        var touch = event.targetTouches[0]; // touches数组对象获得屏幕上所有的touch，取第一个touch
-            startPos = {x: touch.pageX, y: touch.pageY, time: +new Date()}; // 取第一个touch的坐标值
-            isScrolling = 0; // 这个参数判断是垂直滚动还是水平滚动
-    }, false);
-    // 解绑事件 web前端开发
-    document.addEventListener('touchend', function(event) {
-    document.removeEventListener('touchmove', this, false);
-    document.removeEventListener('touchend', this, false);
-    }, false);
-    document.addEventListener('touchmove', function(event) {
-        // 当屏幕有多个touch或者页面被缩放过，就不执行move操作
-        if (event.targetTouches.length > 1 || event.scale && event.scale !== 1) return;
-        var touch = event.targetTouches[0];
-        endPos = {x: touch.pageX - startPos.x, y: touch.pageY - startPos.y};
-        isScrolling = Math.abs(endPos.x) < Math.abs(endPos.y) ? 1 : 0; // isScrolling为1时，表示纵向滑动，0为横向滑动
-        if (isScrolling === 1) {
-            // alert(0);
-            event.preventDefault(); // 阻止触摸事件的默认行为，即阻止滚屏
-        }
-    }, false);
+    save() {
+      if (this.reTime.length === 0) {
+        alert('请选择时间');
+      } else if (this.numType.length === 0) {
+        alert('请选择桌型');
+      } else {
+        alert('预定成功');
+        window.location.href = 'http://diancan.bao2v.com/index.html';
+      }
     }
   }
 };
@@ -114,17 +98,17 @@ export default{
         color:#797c7f;
       }
       .time-slect{
-        width: 350px;
-        height: 32px;
-        display: inline-block; 
-        margin-top: 15px;
-        box-sizing: border-box;
-        text-align:center;
+         appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+         width: 270px;
+         height: 32px;
+         display: inline-block; 
+         margin-top: 15px;
+         box-sizing: border-box;
+         text-align:center;
          font-size: 16px;
          line-height: 16px;
-        appearance:none;
-        -moz-appearance:none;
-         -webkit-appearance:none;
          border:1px solid #4e4c4c;
       }
     }

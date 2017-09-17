@@ -12,7 +12,7 @@
         </ul>
       </div>
       <div class="foods-wrapper" ref="foodsWrapper">
-        <ul>
+        <ul class="ul-food">
           <li v-for="item in goods" class="food-list" ref="foodList">
             <h1 class="title">{{item.name}}</h1>
             <ul>
@@ -69,10 +69,9 @@ export default{
       goods: [],
       listHeight: [],
       scrollY: 0,
-      selectedFood: {}
+      selectedFood: {},
+      classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
   	};
-  },
-  create() {
   },
    computed: {
       currentIndex() {
@@ -89,7 +88,7 @@ export default{
         let foods = [];
         this.goods.forEach((good) => {
           good.foods.forEach((food) => {
-            var flag = true;
+            let flag = true;
             if (food.count) {
                foods.forEach((subFood) => {
                 if (subFood.id === food.id) {
@@ -111,17 +110,46 @@ export default{
 
     },
   created() {
-    this.$http.get('/api/goods').then((response) => {
-      response = response.body;
-      if (response.errno === ERR_OK) {
-        this.goods = response.data;
+    if (window.localStorage) {
+      if (localStorage.goods) {
+        this.goods = JSON.parse(localStorage.getItem('goods'));
+        // this._initScroll();
         this.$nextTick(() => {
+        // this._calculateHeight();
+        // this._initScroll();
+        });
+      } else {
+         this.$http.get('http://diancan.bao2v.com/getJson/goods').then((response) => {
+         response = response.body;
+         if (response.errno === ERR_OK) {
+           this.goods = response.data;
+           if (window.localStorage) {
+             localStorage.setItem('goods', JSON.stringify(this.goods));
+          }
+         this.$nextTick(() => {
+          // this._initScroll();
+          // this._calculateHeight();
+        });
+      }
+    });
+      }
+    } else {
+         this.$http.get('http://diancan.bao2v.com/getJson/goods').then((response) => {
+         response = response.body;
+         if (response.errno === ERR_OK) {
+          this.goods = response.data;
+          this.$nextTick(() => {
           this._initScroll();
           this._calculateHeight();
         });
       }
     });
-    this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+    }
+    // this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+  },
+  mounted() {
+      this._calculateHeight();
+      this._initScroll();
   },
   methods: {
     selectMenu(index, event) {
@@ -212,7 +240,9 @@ export default{
   }
   .foods-wrapper{
     flex: 1;
-    .title{
+    .ul-food{
+      padding-bottom: 35px;
+          .title{
       padding-left: 14px;
       height: 26px;
       line-height: 26px;
@@ -278,6 +308,8 @@ export default{
           }
       }
     }
+    }
+
   }
 }
 </style>

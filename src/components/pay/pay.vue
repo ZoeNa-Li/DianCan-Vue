@@ -4,7 +4,7 @@
       <v-slider :url="back" title="支付账单"></v-slider>
        <div class="wrapperList">
             <ul class="pay-list-content clearfix" ref="listContent">
-              <li class="" v-for="(list,index) in lists" class="list">
+              <li  v-for="(list,index) in lists" class="list">
                 <span class="name">{{list.food.name}}</span>
                 <span class="count">x{{list.quantity}}</span>
                 <span class="price">￥{{list.food.price}}</span>
@@ -15,7 +15,7 @@
               <span class="num">￥{{orderLists.totalPrice}}</span>
            </div> 
     </div>
-    <form action="http://bao2v.com/diancan1/payLatestOrder" method="get">
+    <form action="http://diancan.bao2v.com/payLatestOrder" method="get">
           <input type="submit" class="payOrder" value="支付账单">
     </form>
     <div class="pay-mask" v-show="showMask">
@@ -27,7 +27,6 @@
 </template>
 <script type="text/ecmascript-6">
   import Slider from '@/components/slider/slider';
-  const ERR_OK = 0;
 export default{
   name: 'pay',
   components: {
@@ -47,13 +46,13 @@ export default{
       }
   },
   created() {
-    this.$http.get('/api/orders').then((response) => {
-    response = response.body;
-    if (response.errno === ERR_OK) {
-      this.orderLists = response.data;
+    this.$http.get('http://diancan.bao2v.com/getLatestOrder').then((response) => {
+     // console.log(response);
+      // response = response.bodyText;
+      // console.log(response.bodyText);
+      // this.orderLists = JSON.parse(response.bodyText);
+      this.orderLists = response.body;
       this.lists = this.orderLists.itemList;
-      console.log(this.orderLists.itemList);
-      }
     });
   },
   methods: {

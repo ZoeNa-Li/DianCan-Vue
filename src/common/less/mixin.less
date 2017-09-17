@@ -1,5 +1,7 @@
 .pay(){
-   .order-list{
+ .order-ul{
+   padding-bottom: 75px;
+      .order-list{
     padding:10px;
     .border-1px(#e2dfdf);  
     .order-status{
@@ -17,11 +19,17 @@
         color: #e6e640;
       }
     }
+    .order-date{
+      font-size: 14px;
+      margin-right: 5px;
+    }
+     .order-id{
+      font-size: 14px;
+    }
     .food-list{
-      margin-bottom: 5px;
+      margin: 10px auto;
       font-size: 16px;
       .name{
-        display: block;
         margin-bottom: 2px;
         color: #000;
       }
@@ -49,10 +57,12 @@
       }
     }
     }
+ }
 }
 .noe-webkit-border(){
-  -webkit-appearance: none;
-  -moz-appearance: none;
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  appearance:none;
   outline: none;
   appearance: none;
   border-radius: 0;

@@ -13,26 +13,34 @@
     <div class="wrapper-content" ref="contentWrapper">
      <transition name="change-position">
          <div class="clearfix inner-content" id="innerContent" @touchstart="touchStartHandler($event)" @touchend="touchEndHandler($event)" :style="{ left: positionX + 'px'}">
+         <!-- 全部订单 -->
           <div class="wrapper-list" ref="listsWrapper">
-             <ul>
+             <ul class="order-ul">
                  <li v-for="order in allOrders" class="order-list" >
                    <ul>
                       <span  class="order-status" :class="clacuteStatus(order.status,order.orderDate)">{{calculateLabel(order.status,order.orderDate)}}</span>
+                      <span class="order-date">{{transform(order.orderDate)}}</span>
+                      <span class="order-id">订单号：{{order.orderId}}</span>
                       <li v-for="list in order.itemList" class="food-list" >
                           <span class="name">{{list.food.name}}</span>
                           <span class="count">x{{list.quantity}}</span>
                       </li>
                   </ul>
                   <span class="totalPrice">总价￥{{order.totalPrice}}</span>
-                  <input type="button" v-if="showButton(order.status,order.orderDate)" class="pay-button" value="付款"></input>
+                  <form action="http://bao2v.com/diancan1/payByOrderId?orderId={order.orderId}" method="get">
+                   </form>
+                    <input type="button" v-if="showButton(order.status,order.orderDate)" class="pay-button" value="付款" @click="ajaxHandler(order.orderId)"></input>
                 </li>
             </ul>
           </div>
+          <!-- 已支付 -->
           <div class="wrapper-haspay" ref="haspayWrapper">
-            <ul>
+            <ul class="order-ul">
                  <li v-for="order in haspayOrder" class="order-list" >
                    <ul>
                       <span  class="order-status" :class="clacuteStatus(order.status,order.orderDate)">{{calculateLabel(order.status,order.orderDate)}}</span>
+                       <span class="order-date">{{transform(order.orderDate)}}</span>
+                      <span class="order-id">订单号：{{order.orderId}}</span>
                       <li v-for="list in order.itemList" class="food-list" >
                           <span class="name">{{list.food.name}}</span>
                           <span class="count">x{{list.quantity}}</span>
@@ -43,26 +51,32 @@
                 </li>
             </ul>
           </div>
+          <!-- 未支付 -->
           <div class="wrapper-unpay" ref="unpayWrapper">
-            <ul>
+            <ul class="order-ul">
                  <li v-for="order in unpayOrders" class="order-list" >
                    <ul>
                       <span  class="order-status" :class="clacuteStatus(order.status,order.orderDate)">{{calculateLabel(order.status,order.orderDate)}}</span>
+                       <span class="order-date">{{transform(order.orderDate)}}</span>
+                      <span class="order-id">订单号：{{order.orderId}}</span>
                       <li v-for="list in order.itemList" class="food-list" >
                           <span class="name">{{list.food.name}}</span>
                           <span class="count">x{{list.quantity}}</span>
                       </li>
                   </ul>
                   <span class="totalPrice">总价￥{{order.totalPrice}}</span>
-                  <input type="button" v-if="showButton(order.status,order.orderDate)" class="pay-button" value="付款"></input>
+                  <input type="button" v-if="showButton(order.status,order.orderDate)" class="pay-button" value="付款"  @click="ajaxHandler(order.orderId)"></input>
                 </li>
             </ul>
           </div>
+          <!-- 已失效 -->
           <div class="wrapper-lose" ref="loseWrapper">
-            <ul>
+            <ul class="order-ul">
                  <li v-for="order in loseOrders" class="order-list" >
                    <ul>
                       <span  class="order-status" :class="clacuteStatus(order.status,order.orderDate)">{{calculateLabel(order.status,order.orderDate)}}</span>
+                       <span class="order-date">{{transform(order.orderDate)}}</span>
+                      <span class="order-id">订单号：{{order.orderId}}</span>
                       <li v-for="list in order.itemList" class="food-list" >
                           <span class="name">{{list.food.name}}</span>
                           <span class="count">x{{list.quantity}}</span>
@@ -83,7 +97,7 @@
 import Slider from '@/components/slider/slider';
 import Split from '@/components/split/split';
 import BScroll from 'better-scroll';
-const ERR_OK = 0;
+// const ERR_OK = 0;
 const clientW = document.body.clientWidth;
 export default{
   name: 'order',
@@ -105,47 +119,51 @@ export default{
     'v-split': Split
   },
   created() {
-    this.$http.get('/api/orderList').then((response) => {
-      response = response.body;
-      if (response.errno === ERR_OK) {
-        this.allOrders = response.data;
+    this.$http.get('http://diancan.bao2v.com/getAllOrderDetail').then((response) => {
+        console.log(response);
+        response = response.body;
+        this.allOrders = response.orderList;
         this.$nextTick(() => {
           this.handlerData(this.allOrders);
           this.$nextTick(() => {
             this.initOrderScroll();
         });
         });
-      }
     });
   },
   computed: {
   },
   methods: {
+    ajaxHandler(id) {
+       this.$http.get('http://diancan.bao2v.com/payByOrderId?orderId=' + id).then().catch();
+       window.location.reload();
+    },
     handlerData(allData) {
       allData.forEach((item, index) => {
-        if (item.status === 0) {
-          this.unpayOrders.push(item);
+        // console.log(item.status);
+        if (item.status === 1) {
+          this.haspayOrder.push(item);
         } else {
-          var NowTime = new Date();
-          var offTimew = NowTime.getTime() - item.orderDate;
+          let NowTime = new Date();
+          let offTimew = NowTime.getTime() - item.orderDate;
          if (offTimew > 1800000) {
             this.loseOrders.push(item);
           } else {
-           this.haspayOrder.push(item);
+            this.unpayOrders.push(item);
           }
         }
       });
     },
     touchStartHandler(e) {
-       var startEvent = e || window.e;
-       var target = startEvent.touches[0];
+       let startEvent = e || window.e;
+       let target = startEvent.touches[0];
        this.touchStartX = target.clientX;
     },
     touchEndHandler(e) {
-       var endEvent = e || window.e;
-       var target = endEvent.changedTouches[0];
+       let endEvent = e || window.e;
+       let target = endEvent.changedTouches[0];
        this.touchEndX = target.clientX;
-      var offX = this.touchEndX - this.touchStartX; // 从左向右大于0，从右向左小于0
+      let offX = this.touchEndX - this.touchStartX; // 从左向右大于0，从右向左小于0
         this.touchEndX = 0;
         this.touchStartX = 0;
         if (Math.abs(offX) > 80) {
@@ -165,6 +183,19 @@ export default{
             }
           }
           }
+    },
+    transform(time) {
+      time = new Date(time);
+      let year = time.getFullYear(); // 年
+      let m = time.getMonth() + 1; // 月
+      let d = time.getDate(); // 日
+      let h = time.getHours(); // 时
+      let min = time.getMinutes();
+      let s = time.getSeconds();
+      if (parseInt(h) < 10) {
+        h = '0' + h;
+      }
+      return year + '-' + m + '-' + d + ' ' + h + ':' + min + ':' + s;
     },
     initOrderScroll() {
         this.menuScroll = new BScroll(this.$refs.listsWrapper, {scrollX: false});
@@ -213,7 +244,7 @@ export default{
       }
     },
     calculateLabel(statu, time) {
-     var label = this.clacuteStatus(statu, time);
+     let label = this.clacuteStatus(statu, time);
      switch (label) {
       case 'pay' :
         return '已支付';

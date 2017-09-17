@@ -32,11 +32,10 @@ export default {
     };
   },
   created() {
-    this.$http.get('api/seller').then((response) => {
+    this.$http.get('http://diancan.bao2v.com/getJson/seller').then((response) => {
         response = response.body;
         if (response.errno === ERR_OK) {
            this.seller = response.data;
-           console.log(this.seller);
         }
     });
   }

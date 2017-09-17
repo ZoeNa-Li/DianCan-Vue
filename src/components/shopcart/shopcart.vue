@@ -14,7 +14,7 @@
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
         </div>
         <div class="content-right" >
-        <form action="http://bao2v.com/diancan1/submitOrder"  @submit="onSubmit" role="form" method="post">
+        <form action="http://diancan.bao2v.com/submitOrder"  @submit="onSubmit" role="form" method="post">
                  <input type="text" name="list" :value="orderList" hidden></input>
                  <input type="submit" value="提交订单" id="post" class="pay" :class="payClass" />
         </form> 
@@ -108,7 +108,7 @@
         }
       },
       payClass() {
-        var count = this.totalCount;
+        let count = this.totalCount;
         if (count <= 0) {
           return 'not-enough';
         } else {
@@ -135,8 +135,8 @@
         return show;
       },
       orderList() {
-        var lists = this.selectFoods;
-        var result = {};
+        let lists = this.selectFoods;
+        let result = {};
         for (var key in lists) {
            result['item_' + key] = {};
            result['item_' + key].id = lists[key].id;
